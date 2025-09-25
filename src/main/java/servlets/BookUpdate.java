@@ -18,10 +18,10 @@ import java.util.ArrayList;
 public class BookUpdate extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        beans.Book book = new beans.Book();
+        beans.Book book = new beans.Book();             // check code 8: biến book chưa được kiểm tra null sau khi khởi tạo
 
-        Boolean update = request.getParameter("action").equals("edit");
-        String oldISBN = request.getParameter("oldISBN");
+        Boolean update = request.getParameter("action").equals("edit");     //check code 15: không kiểm tra null trước khi gọi equals()
+        String oldISBN = request.getParameter("oldISBN");               // từ 24 đến 34 check code 15: không kiểm tra null cho tham số đầu vào 
         String ISBN = request.getParameter("ISBN");
         String title = request.getParameter("title");
         String price = request.getParameter("price");
@@ -33,7 +33,7 @@ public class BookUpdate extends HttpServlet {
         String copies = request.getParameter("copies");
         String newAuthor = request.getParameter("newAuthor");
 
-        try {
+        try {                                                      // không có comment mô tả
             int isbn_int = Integer.parseInt(ISBN);
             book.setISBN(isbn_int);
         } catch (NumberFormatException e) {
@@ -47,9 +47,9 @@ public class BookUpdate extends HttpServlet {
             return;
         }
 
-        book.setTitle(title);
+        book.setTitle(title);               // không kiểm tra null hoặc rỗng cho title
 
-        try {
+        try {                               // Không có comment mô tả 
             Double price_double = Double.parseDouble(price);
             book.setPrice(price_double);
         } catch (NumberFormatException e) {
@@ -63,10 +63,10 @@ public class BookUpdate extends HttpServlet {
             return;
         }
 
-        book.setPublisherName(publisher);
+        book.setPublisherName(publisher);                   // check code 15: không kiểm tra null cho publisher và pub_year
         book.setPublicationYear(pub_year);
 
-
+        // check code 47: không có comment mô tả 
         try {
             int threshold_int = Integer.parseInt(threshold);
             book.setThreshold(threshold_int);
@@ -82,7 +82,7 @@ public class BookUpdate extends HttpServlet {
         }
 
         try {
-            book.setCategory(BookCategory.valueOf(category));
+            book.setCategory(BookCategory.valueOf(category));       // check code 19: không kiểm tra null cho category trước khi gọi valueOf()
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Category doesn't exits, make sure it's in the form " +
@@ -96,21 +96,21 @@ public class BookUpdate extends HttpServlet {
         }
 
         if (update) {
-            book.setNumberOfCopies(Integer.parseInt(originalCopies));
+            book.setNumberOfCopies(Integer.parseInt(originalCopies));       // check code 15: không kiểm tra null hoặc định dạng cho originalCopies
 
             ArrayList<String> authors = new ArrayList<>();
-            for (String author : BookDAO.getBookAuthors(Integer.parseInt(oldISBN))) {
+            for (String author : BookDAO.getBookAuthors(Integer.parseInt(oldISBN))) {           // check code 15: không kiểm tra null cho edited_author
                 String edited_author = request.getParameter(author);
                 if (!edited_author.isEmpty()) {
                     authors.add(edited_author);
                 }
             }
 
-            if (!newAuthor.isEmpty()) {
+            if (!newAuthor.isEmpty()) {         // check code 15: không kiểm tra null cho newAuthor
                 authors.add(newAuthor);
             }
 
-            if (!BookDAO.modifyBook(book, Integer.parseInt(oldISBN), authors)) {
+            if (!BookDAO.modifyBook(book, Integer.parseInt(oldISBN), authors)) {            // check code 37: không kiểm tra ngoại lệ khi gọi DAO
                 request.setAttribute("errorMessage", "Updating book info failed.");
                 request.getRequestDispatcher("editBook.jsp").forward(request, response);
             } else {
@@ -120,7 +120,7 @@ public class BookUpdate extends HttpServlet {
         } else {
             // Adding new book.
             try {
-                book.setNumberOfCopies(Integer.parseInt(copies));
+                book.setNumberOfCopies(Integer.parseInt(copies));       // check code 15: không kiểm tra null hoặc định dạng của copies
             } catch (NumberFormatException e) {
                 e.printStackTrace();
                 request.setAttribute("errorMessage", "Copies must be an integer value");
@@ -129,7 +129,7 @@ public class BookUpdate extends HttpServlet {
 
             ArrayList<String> authors = new ArrayList<>();
 
-            String author1 = request.getParameter("author1");
+            String author1 = request.getParameter("author1");       // check code 15: không kiểm tra null cho từng author
             String author2 = request.getParameter("author2");
             String author3 = request.getParameter("author3");
             String author4 = request.getParameter("author4");
@@ -145,7 +145,7 @@ public class BookUpdate extends HttpServlet {
 
             book.setAuthorsNames(authors);
 
-            if (!BookDAO.addNewBook(book)) {
+            if (!BookDAO.addNewBook(book)) {                // check code 37: không xử lý ngoại lệ khi gọi DAO
                 request.setAttribute("errorMessage", "Adding book failed.");
                 request.getRequestDispatcher("addNewBook.jsp").forward(request, response);
             } else {

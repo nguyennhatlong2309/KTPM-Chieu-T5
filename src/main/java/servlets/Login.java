@@ -1,5 +1,4 @@
 package servlets;
-
 import beans.Cart;
 import beans.User;
 import model.UserDAO;
@@ -16,13 +15,13 @@ import java.io.IOException;
 public class Login extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String pass = request.getParameter("pass");
+        String email = request.getParameter("email");           // check code 3 : chưa kiểm tra null hoặc chuỗi rỗng trước khi sử dụng đầu vào
+        String pass = request.getParameter("pass");             // check code 3 : chưa kiểm tra null hoặc chuỗi rỗng trước khi sử dụng đầu vào
 
-        if (UserDAO.login(email, pass)) {
-            System.out.println("LOGIN SUCCESS");
+        if (UserDAO.login(email, pass)) {                   // check code 15 + 37: không kiểm tra giá trị đầu vào trước khi gọi DAO + Không xử lí ngoại lệ khi gọi DAO
+            System.out.println("LOGIN SUCCESS");    
             /* Get the current user */
-            User user = UserDAO.getUser(email);
+            User user = UserDAO.getUser(email);             // check code 19 + 37: không kiểm tra user có null + không xử lý ngoại lệ khi gọi DAO
 
             Cart cart = new Cart(user.getUserID());
             /* get new session or create new if it doesn't exist */
@@ -31,8 +30,8 @@ public class Login extends HttpServlet {
             session.setAttribute("user", user);
             session.setAttribute("cart", cart);
 
-            /* send it to welcome page */
-            request.setAttribute("successMessage", "Success.");
+            /* send it to welcome page */               // check code 47 + 49: comment chưa rõ ràng + comment không nhất quán với hành vi 
+            request.setAttribute("successMessage", "Success.");     // check code 10 + 62: chuỗi nên là hằng số + Không dùng được do sendRedirect
             response.sendRedirect("index.jsp");
         } else {
             System.out.println("LOGIN FAILURE");

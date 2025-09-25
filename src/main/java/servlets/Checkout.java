@@ -1,17 +1,18 @@
 package servlets;
 
 import beans.Cart;
-import beans.Sale;
-import model.SalesDAO;
+import beans.Sale; //  Unused import
+import model.SalesDAO; //  Unused import
+import javax.sql.rowset.serial.SerialStruct; //  Unused import
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialStruct;
+import java.util.ArrayList; //  Unused import
 import java.io.IOException;
-import java.util.ArrayList;
 
 @WebServlet(name = "checkout", urlPatterns = "/checkout")
 public class Checkout extends HttpServlet {
@@ -33,10 +34,14 @@ public class Checkout extends HttpServlet {
         if (!firstname.isEmpty() & !email.isEmpty() & !address.isEmpty() & !city.isEmpty() & !state.isEmpty() &
                 !zip.isEmpty() & !cardname.isEmpty() & !cardnumber.isEmpty() & !expmonth.isEmpty() & !expyear
                 .isEmpty() & !cvv.isEmpty()) {
+            //  Dùng & thay vì && -> không short-circuit, dễ NPE khi param null
+            //  Chưa kiểm tra null trước khi gọi isEmpty() -> có thể gây NullPointerException
+
             System.out.println("CHECKOUT SUCCESS");
 
             Cart cart = ((Cart) request.getSession().getAttribute("cart"));
-            cart.checkOut();
+            cart.checkOut(); //  Không kiểm tra cart null -> NullPointerException nếu cart chưa tồn tại trong session
+
             if (!cart.getCart().isEmpty()) {
                 request.setAttribute("errorMessage", "These items failed to checkout, they may be not available " +
                         "at the moment!");
@@ -44,16 +49,16 @@ public class Checkout extends HttpServlet {
             } else {
                 request.setAttribute("successMessage", "Checkout Done");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
+                //  Forward ngay sau POST -> có thể bị form resubmission, nên dùng redirect (PRG pattern)
             }
         } else {
             System.out.println("CHECKOUT FAIL");
             request.setAttribute("errorMessage", "Please fill the empty slots");
             request.getRequestDispatcher("checkout.jsp").forward(request, response);
         }
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        // doGet trống -> omission, không rõ xử lý khi user truy cập /checkout bằng GET
     }
 }
