@@ -17,11 +17,11 @@ import java.security.spec.InvalidKeySpecException;
 public class Register extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = new User(
-                request.getParameter("email"),
-                request.getParameter("FName"),
-                request.getParameter("LName"),
-                request.getParameter("PhoneNumber"),
-                request.getParameter("ShippingAddress")
+                request.getParameter("email"),  // dont checked for null or empty
+                request.getParameter("FName"),  // don't checked for null or empty
+                request.getParameter("LName"),  // don't checked for null or empty
+                request.getParameter("PhoneNumber"),  // don't checked for null or empty
+                request.getParameter("ShippingAddress")  // don't checked for null or empty
         );
 
         user.setManager(false);
@@ -32,11 +32,13 @@ public class Register extends HttpServlet {
 
         try {
             salt = pw.generateSalt();
-            encryptedPwd = pw.getEncryptedPassword(request.getParameter("pass"), salt);
+            encryptedPwd = pw.getEncryptedPassword(request.getParameter("pass"), salt);// not sure request.getParameter("pass") works and instead of "pass"  should be as "password"
+            user.setSalt(salt);
             user.setSalt(salt);
             user.setEncryptedPassword(encryptedPwd);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
+            e.printStackTrace();// if exceoption occurs, password will not as excepted -> login will fail
+        }
         }
 
         if (UserDAO.register(user)) {
@@ -46,16 +48,16 @@ public class Register extends HttpServlet {
             request.setAttribute("successMessage", "Registration successful. You can sign in now.");
             /* forward request to login servlet to handle the login process. */
 //            response.sendRedirect("home.jsp");
-            request.getRequestDispatcher("/login").forward(request,response);
+            request.getRequestDispatcher("/login").forward(request,response); // 36 in checklist: not terminated method -> return here
         } else {
             System.out.println("REGISTER FAILURE");
             log("REGISTER FAILURE");
             request.setAttribute("errorMessage", "ERROR!, in register. ");
-            response.sendRedirect("register.jsp");
+            response.sendRedirect("register.jsp"); // 36 in checklist: not terminated method -> return here
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { // 64 in checklist :unneeded  
 
     }
 }

@@ -26,21 +26,22 @@ public class Statistics extends HttpServlet {
             System.out.print("stat1");
 
             // THIS QUERY WORKS
-            String query = "SELECT SUM(Sale.copies * price) from Sale Join Book on (Sale.ISBN = Book.ISBN) " +
+            String query = "SELECT SUM(Sale.copies * price) from Sale Join Book on (Sale.ISBN = Book.ISBN) " + // not have exception -> query works 
                     "WHERE sale_date > (current_Date() - Interval 1 MONTH);";
 
-            report
+            report// being repeated -> convert to method 
                     .columns(Columns.column("Total Profit Last Month", "SUM(Sale.copies * price)",
                             DataTypes.stringType()))
                     .title(Components.text("Total Profit Last Month")
                             .setHorizontalAlignment(CENTER))
                     .pageFooter(Components.pageXofY())
-                    .setDataSource(query, ModelManager.getInstance().getConnection());
+                    .setDataSource(query, ModelManager.getInstance().getConnection());// check connection to db before using this line
+        }
         }
         else if (request.getParameter("stat2") != null) {
             System.out.print("stat2");
 
-            String query = "SELECT User.* , SUM(Sale.copies) AS sum_copies,\n" +
+            String query = "SELECT User.* , SUM(Sale.copies) AS sum_copies,\n" +  // not have exception -> query works , 
                     " SUM(Sale.copies * Book.price) AS sum_paid\n" +
                     " FROM Sale,Book,User\n" +
                     " WHERE   YEAR(Sale.sale_date) >= YEAR(CURRENT_DATE - INTERVAL 3 MONTH)\n" +
@@ -52,7 +53,7 @@ public class Statistics extends HttpServlet {
                     "ORDER BY sum_paid DESC\n" +
                     "LIMIT 5;";
 
-            report
+            report // being repeated -> convert to method 
                     .columns(
                             Columns.column("First Name", "first_name", DataTypes.stringType()),
                             Columns.column("Last Name", "last_name", DataTypes.stringType()),
@@ -62,12 +63,13 @@ public class Statistics extends HttpServlet {
                             Components.text("Top 5 Customer")
                                     .setHorizontalAlignment(CENTER))
                     .pageFooter(Components.pageXofY())
-                    .setDataSource(query, ModelManager.getInstance().getConnection());
+                    .setDataSource(query, ModelManager.getInstance().getConnection());// check connection to db before using this line
+        }
         }
         else if (request.getParameter("stat3") != null) {
             System.out.print("stat3");
 
-            String query = "SELECT DISTINCT Book.*,\n" +
+            String query = "SELECT DISTINCT Book.*,\n" + // not have exception -> query works 
                     "\tSUM( Sale.copies) AS sum_copies\n" +
                     "FROM `Book`,\n" +
                     "\t`Sale`\n" +
@@ -75,7 +77,7 @@ public class Statistics extends HttpServlet {
                     "\t `Book`.`ISBN` = `Sale`.`ISBN` \n" +
                     "GROUP BY `Book`.`ISBN`;";
 
-            report
+            report// being repeated -> convert to method 
                     .columns(
                             Columns.column("ISBN", "ISBN", DataTypes.stringType()),
                             Columns.column("Number of books Sold", "sum_copies",
@@ -84,7 +86,8 @@ public class Statistics extends HttpServlet {
                             Components.text("Top 10 Books")
                                     .setHorizontalAlignment(CENTER))
                     .pageFooter(Components.pageXofY())
-                    .setDataSource(query, ModelManager.getInstance().getConnection());
+                    .setDataSource(query, ModelManager.getInstance().getConnection());// check connection to db before using this line
+        }
         }
 
         try {

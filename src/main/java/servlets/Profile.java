@@ -30,12 +30,12 @@ public class Profile extends HttpServlet {
             return;
         }
 
-        User new_user = new User(
-                request.getParameter("email"),
-                request.getParameter("FName"),
-                request.getParameter("LName"),
-                request.getParameter("PhoneNumber"),
-                request.getParameter("ShippingAddress")
+        User new_user = new User( 
+                request.getParameter("email"),// not commented for parameters and not checked for null or empty
+                request.getParameter("FName"),// not commented for parameters and not checked for null or empty
+                request.getParameter("LName"),// not commented for parameters and not checked for null or empty
+                request.getParameter("PhoneNumber"),// not commented for parameters and not checked for null or empty
+                request.getParameter("ShippingAddress")// not commented for parameters and not checked for null or empty
         );
 
         String old_password = request.getParameter("old_pass");
@@ -43,12 +43,15 @@ public class Profile extends HttpServlet {
 
         PasswordEncryptionService pw = new PasswordEncryptionService();
 
-        User old_user = (User) request.getSession().getAttribute("user");
+        User old_user = (User) request.getSession().getAttribute("user");// old_user can null 
+
 
         try {
-            if (pw.authenticate(old_password, old_user.getEncryptedPassword(), old_user.getSalt())) {
+            if (pw.authenticate(old_password, old_user.getEncryptedPassword(), old_user.getSalt())) { 
                 if (!new_password.isEmpty()) {
-                    new_user.setEncryptedPassword(pw.getEncryptedPassword(new_password, old_user.getSalt()));
+                    new_user.setEncryptedPassword(pw.getEncryptedPassword(new_password, old_user.getSalt())); // not catch NullException 
+                    }
+                    System.out.println("Old Password matched.");
                 }
                 System.out.println("Old Password matched.");
             } else {

@@ -1,12 +1,13 @@
 package services;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 public class PasswordEncryptionService {
 
@@ -14,14 +15,16 @@ public class PasswordEncryptionService {
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		// Encrypt the clear-text password using the same salt that was used to
 		// encrypt the original password
-		byte[] encryptedAttemptedPassword = getEncryptedPassword(attemptedPassword, salt);
+		byte[] encryptedAttemptedPassword = getEncryptedPassword(attemptedPassword, salt); // not checked null or empty before using attemptedPassword or salt, not yet processed exception
+
+		// Authentication succeeds if encrypted password that the user entered
 
 		// Authentication succeeds if encrypted password that the user entered
 		// is equal to the stored hash
 		return Arrays.equals(encryptedPassword, encryptedAttemptedPassword);
 	}
 
-	public byte[] getEncryptedPassword(String password, byte[] salt)
+	public byte[] getEncryptedPassword(String password, byte[] salt)// not checking  null or empty before using password or salt
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		// PBKDF2 with SHA-1 as the hashing algorithm. Note that the NIST
 		// specifically names SHA-1 as an acceptable hashing algorithm for PBKDF2
@@ -35,7 +38,7 @@ public class PasswordEncryptionService {
 		// http://blog.crackpassword.com/2010/09/smartphone-forensics-cracking-blackberry-backup-passwords/
 		int iterations = 20000;
 
-		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, iterations, derivedKeyLength);
+		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, iterations, derivedKeyLength); //not have comment for parameter
 
 		SecretKeyFactory f = SecretKeyFactory.getInstance(algorithm);
 
