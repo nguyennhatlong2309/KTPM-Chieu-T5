@@ -4,6 +4,10 @@ import model.SalesDAO;
 
 import java.util.ArrayList;
 
+/** Hoàng Anh
+ * biến cart nên để private để đảm bảo tính đóng gói
+ */
+
 public class Cart {
     private String user_id;
     ArrayList<Sale> cart;
@@ -19,6 +23,10 @@ public class Cart {
      */
     public void addSale(Sale sale) {
         for (Sale s : cart) {
+            /** Hoàng Anh
+             * Lỗi cú pháp ở if (s.getISBN() = sale.getISBN())
+             * dùng dấu = (gán) thay vì so sánh ==.
+            */
             if (s.getISBN() = sale.getISBN()) {
                 s.setCopies(s.getCopies() + sale.getCopies());
                 return;
@@ -60,6 +68,9 @@ public class Cart {
     /**
      * compute total price.
      * @return
+     */
+    /** Hoàng Anh
+     * nên đổi về double (hợp lý hơn cho tiền)
      */
     public int getTotalPrice() {
         int sum = 0;

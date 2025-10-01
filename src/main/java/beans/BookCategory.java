@@ -1,6 +1,6 @@
 package beans;
 
-public enum BookCategory {
+public enum     BookCategory {
     Art,
     Science,
     Religion,

@@ -233,7 +233,10 @@ public class BookDAO {
     public static Book findByTitle(@NotNull String title) {
         String query = "SELECT * FROM Book "
                         + "WHERE TITLE = '" + title + "';";
-
+        /**  Hoàng Anh
+         * nếu resultSet rỗng => buildBook(resultSet) sẽ fail (vì chưa next()).
+         * cần if resultSet.next()) trước khi build.
+         */
         ResultSet resultSet = null;
         try {
             resultSet = ModelManager.getInstance().executeQuery(query);
@@ -254,7 +257,11 @@ public class BookDAO {
     public static Book findByISBN(Integer ISBN) {
         String query = "SELECT * FROM Book "
                 + "WHERE ISBN = " + ISBN + ";";
-
+    /** Hoàng Anh
+     * findByISBN luôn gọi resultSet.next() mà không kiểm tra
+     * Nếu ISBN không tồn tại, gọi resultSet.next() sẽ trả về false và lỗi.
+     * Cần check if (resultSet.next()).
+     * */
         ResultSet resultSet = null;
         try {
             resultSet = ModelManager.getInstance().executeQuery(query);
